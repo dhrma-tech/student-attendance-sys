@@ -2,9 +2,9 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
+// const mongoose = require('mongoose'); // Uncomment this when you add your MongoDB URI
 require('dotenv').config();
 
-// Import our security engine
 const { generateRotatingQR } = require('./utils/totp');
 
 const app = express();
@@ -13,42 +13,48 @@ app.use(express.json());
 
 const server = http.createServer(app);
 
-// Initialize WebSockets
+// Initialize WebSockets for the live projector dashboard
 const io = new Server(server, {
   cors: {
-    origin: "*", // In production, change this to your React app's URL
+    origin: "*", // Change this to your frontend URL in production
     methods: ["GET", "POST"]
   }
 });
 
+// Middleware: Attach the Socket.io instance to the request object
+// This allows our API routes to trigger projector updates
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
 // WebSocket Connection Logic
 io.on('connection', (socket) => {
-  console.log('New client connected:', socket.id);
+  console.log('New dashboard connected:', socket.id);
 
-  // When a teacher clicks "Start Lecture" on the frontend
   socket.on('start_session', ({ classId, sessionId }) => {
-    // Group this specific lecture into a "room"
-    socket.join(sessionId);
+    socket.join(sessionId); // Group this specific lecture
     console.log(`Session ${sessionId} started for Class ${classId}`);
 
-    // Immediately generate and send the first QR code payload
+    // Push the first QR code immediately
     socket.emit('qr_update', generateRotatingQR(classId, sessionId));
 
-    // Set up the interval to generate and push a new QR code every 10 seconds
+    // Rotate and push a new QR code every 10 seconds
     const qrInterval = setInterval(() => {
-      // Push ONLY to the specific session room
       io.to(sessionId).emit('qr_update', generateRotatingQR(classId, sessionId));
     }, 10000);
 
-    // Clean up the interval if the teacher closes the dashboard
     socket.on('disconnect', () => {
       clearInterval(qrInterval);
-      console.log('Client disconnected, stopped QR generation for', sessionId);
+      console.log('Dashboard disconnected, stopped QR generation for', sessionId);
     });
   });
 });
 
-// A basic test route
+// --- API Routes ---
+app.use('/api/attendance', require('./routes/attendance'));
+
+// Health check route
 app.get('/api/status', (req, res) => {
   res.json({ status: 'Attendance Server is running securely.' });
 });
