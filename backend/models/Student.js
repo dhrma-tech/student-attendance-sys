@@ -20,3 +20,6 @@ const StudentSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 module.exports = mongoose.model('Student', StudentSchema);
+email: { type: String, required: true, unique: true },
+  password: { type: String, required: true }, // <-- ADD THIS LINE
+  prnNumber: { type: String, required: true, unique: true },
