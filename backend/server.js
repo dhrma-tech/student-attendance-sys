@@ -2,6 +2,14 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://student-attendance-sys.vercel.app"
+  ],
+  credentials: true
+}));
+
 require("dotenv").config();
 
 const app = express();
