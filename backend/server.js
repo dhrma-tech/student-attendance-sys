@@ -52,6 +52,7 @@ io.on('connection', (socket) => {
 });
 
 // --- API Routes ---
+app.use('/api/auth', require('./routes/auth'));
 app.use('/api/attendance', require('./routes/attendance'));
 
 // Health check route

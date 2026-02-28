@@ -81,9 +81,12 @@ const StudentScanner = ({ studentId }) => {
             <div className="w-full relative">
               <div className="overflow-hidden rounded-xl border-4 border-gray-200">
                 <Scanner 
-                  onResult={(text) => handleScan(text)} 
+                  onScan={(detectedCodes) => {
+                    const text = detectedCodes[0]?.rawValue;
+                    if (text) handleScan(text);
+                  }} 
                   onError={(error) => console.log(error?.message)}
-                  options={{ delayBetweenScanAttempts: 1000 }}
+                  scanDelay={1000}
                 />
               </div>
               
