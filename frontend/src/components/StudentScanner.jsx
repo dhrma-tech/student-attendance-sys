@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Scanner } from '@yudiel/react-qr-scanner';
 import fpPromise from '@fingerprintjs/fingerprintjs';
-import axios from 'axios';
+import { submitScan } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
-const StudentScanner = ({ studentId }) => {
+const StudentScanner = ({ studentId: studentIdProp }) => {
+  const { user } = useAuth();
+  const studentId = studentIdProp || user?.id;
   const [deviceId, setDeviceId] = useState(null);
   const [scanStatus, setScanStatus] = useState('idle'); // 'idle', 'scanning', 'success', 'error'
   const [errorMessage, setErrorMessage] = useState('');
@@ -27,18 +30,20 @@ const StudentScanner = ({ studentId }) => {
       // The QR code holds a JSON string from our Python/Node generator
       const qrPayload = JSON.parse(scannedText); 
 
-      // Send the data to our secure Express endpoint
-      const response = await axios.post('http://localhost:5000/api/attendance/scan', {
-        studentId: studentId, // In a real app, this comes from your Auth/Login context
+      if (!studentId) {
+        setScanStatus('error');
+        setErrorMessage('Please log in as a student to mark attendance.');
+        setTimeout(() => { setScanStatus('idle'); setErrorMessage(''); }, 3000);
+        return;
+      }
+      const response = await submitScan({
+        studentId: String(studentId),
         sessionId: qrPayload.sessionId,
         classId: qrPayload.classId,
         scannedHash: qrPayload.hash,
-        deviceId: deviceId
+        deviceId: deviceId,
       });
-
-      if (response.status === 200) {
-        setScanStatus('success');
-      }
+      if (response.status === 200) setScanStatus('success');
     } catch (error) {
       console.error('Scan Error:', error);
       setScanStatus('error');

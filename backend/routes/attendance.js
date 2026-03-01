@@ -1,10 +1,37 @@
 const express = require('express');
 const router = express.Router();
 
-// Import the Database Models and Security Engine
 const Session = require('../models/Session');
 const Student = require('../models/Student');
 const { validateScan } = require('../utils/totp');
+
+router.get('/recent', async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 50);
+    const sessions = await Session.find()
+      .sort({ startTime: -1 })
+      .limit(10)
+      .populate('attendees.studentId', 'name prnNumber')
+      .lean();
+    const recent = [];
+    sessions.forEach((s) => {
+      (s.attendees || []).forEach((a) => {
+        if (a.studentId) {
+          recent.push({
+            _id: a.studentId._id,
+            studentName: a.studentId.name,
+            prnNumber: a.studentId.prnNumber,
+            sessionId: s._id,
+          });
+        }
+      });
+    });
+    res.json(recent.slice(0, limit));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch recent attendance.' });
+  }
+});
 
 router.post('/scan', async (req, res) => {
   try {
