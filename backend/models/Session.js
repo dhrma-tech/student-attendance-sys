@@ -11,8 +11,17 @@ const SessionSchema = new mongoose.Schema({
   attendees: [{
     studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
     timestamp: { type: Date, default: Date.now },
-    deviceId: { type: String, required: true } // Captured from FingerprintJS to stop multi-logins
+    deviceId: { type: String, required: true }, // Captured from FingerprintJS to stop multi-logins
+    location: {
+      latitude: { type: Number },
+      longitude: { type: Number }
+    }
   }]
-});
+}, { timestamps: true });
+
+// Compound index to prevent duplicate attendance
+SessionSchema.index({ classId: 1, startTime: -1 });
+SessionSchema.index({ teacherId: 1 });
+SessionSchema.index({ 'attendees.studentId': 1, 'attendees.timestamp': -1 });
 
 module.exports = mongoose.model('Session', SessionSchema);

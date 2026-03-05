@@ -1,42 +1,97 @@
 const express = require('express');
 const http = require('http');
+const path = require('path');
 const { Server } = require('socket.io');
-const cors = require('cors');
-// const mongoose = require('mongoose'); // Uncomment this when you add your MongoDB URI
 require('dotenv').config();
+
+const connectDB = require('./config/database');
+const { validateEnv } = require('./config/envValidation');
+const { securityMiddleware, generalLimiter } = require('./middleware/security');
+const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
+const { logSystem, logger } = require('./utils/logger');
+
+// Validate environment variables
+validateEnv();
 
 const { generateRotatingQR } = require('./utils/totp');
 
+// Initialize Express app
 const app = express();
-app.use(cors());
-app.use(express.json());
 
-const server = http.createServer(app);
+// Connect to database
+connectDB();
 
-// Initialize WebSockets for the live projector dashboard
-const io = new Server(server, {
-  cors: {
-    origin: "*", // Change this to your frontend URL in production
-    methods: ["GET", "POST"]
-  }
-});
+// Apply security middleware
+app.use(securityMiddleware);
+app.use(generalLimiter);
 
 // Middleware: Attach the Socket.io instance to the request object
-// This allows our API routes to trigger projector updates
 app.use((req, res, next) => {
   req.io = io;
   next();
 });
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
+// API Routes
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/attendance', require('./routes/attendance'));
+app.use('/api/sessions', require('./routes/session'));
+app.use('/api/classes', require('./routes/class'));
+app.use('/api/admin', require('./routes/admin'));
+
+// SPA fallback for frontend routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+});
+
+// Error handling middleware (must be last)
+app.use(errorHandler);
+
+// Create HTTP server
+const server = http.createServer(app);
+
+// Initialize Socket.io for real-time features
+const io = new Server(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
 // WebSocket Connection Logic
 io.on('connection', (socket) => {
-  console.log('New dashboard connected:', socket.id);
+  logger.info(`New dashboard connected: ${socket.id}`);
+
+  socket.on('join_session', ({ sessionId, userRole, userId }) => {
+    socket.join(sessionId);
+    socket.sessionId = sessionId;
+    socket.userRole = userRole;
+    socket.userId = userId;
+    
+    logger.info(`User ${userId} (${userRole}) joined session ${sessionId}`);
+    
+    // Notify others in session
+    socket.to(sessionId).emit('user_joined', {
+      userId,
+      userRole,
+      timestamp: new Date()
+    });
+  });
 
   socket.on('start_session', ({ classId, sessionId }) => {
-    socket.join(sessionId); // Group this specific lecture
-    console.log(`Session ${sessionId} started for Class ${classId}`);
+    socket.join(sessionId);
+    logger.info(`Session ${sessionId} started for Class ${classId}`);
 
-    // Push the first QR code immediately
+    // Push first QR code immediately
     socket.emit('qr_update', generateRotatingQR(classId, sessionId));
 
     // Rotate and push a new QR code every 10 seconds
@@ -46,20 +101,43 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
       clearInterval(qrInterval);
-      console.log('Dashboard disconnected, stopped QR generation for', sessionId);
+      logger.info(`Dashboard disconnected, stopped QR generation for ${sessionId}`);
     });
+  });
+
+  socket.on('leave_session', ({ sessionId }) => {
+    socket.leave(sessionId);
+    socket.to(sessionId).emit('user_left', {
+      userId: socket.userId,
+      userRole: socket.userRole,
+      timestamp: new Date()
+    });
+    logger.info(`User ${socket.userId} left session ${sessionId}`);
+  });
+
+  socket.on('disconnect', () => {
+    if (socket.sessionId) {
+      socket.to(socket.sessionId).emit('user_left', {
+        userId: socket.userId,
+        userRole: socket.userRole,
+        timestamp: new Date()
+      });
+    }
+    logger.info(`User disconnected: ${socket.id}`);
   });
 });
 
-// --- API Routes ---
-app.use('/api/attendance', require('./routes/attendance'));
-
-// Health check route
-app.get('/api/status', (req, res) => {
-  res.json({ status: 'Attendance Server is running securely.' });
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  logSystem.gracefulShutdown('SIGTERM');
+  server.close(() => {
+    logger.info('Process terminated');
+    process.exit(0);
+  });
 });
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+  logSystem.serverStart(PORT);
+  logger.info(`Server listening on port ${PORT}`);
 });

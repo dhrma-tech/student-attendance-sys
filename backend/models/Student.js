@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const StudentSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, enum: ['admin', 'teacher', 'student'], default: 'student' },
   
   // University specific identifiers
   prnNumber: { type: String, required: true, unique: true }, 
@@ -19,7 +21,10 @@ const StudentSchema = new mongoose.Schema({
   enrolledClasses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Class' }]
 }, { timestamps: true });
 
+// Indexes for performance
+StudentSchema.index({ email: 1 });
+StudentSchema.index({ prnNumber: 1 });
+StudentSchema.index({ role: 1 });
+StudentSchema.index({ branch: 1, year: 1 });
+
 module.exports = mongoose.model('Student', StudentSchema);
-email: { type: String, required: true, unique: true },
-  password: { type: String, required: true }, // <-- ADD THIS LINE
-  prnNumber: { type: String, required: true, unique: true },

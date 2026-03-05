@@ -11,7 +11,19 @@ const ClassSchema = new mongoose.Schema({
   teacherId: { type: mongoose.Schema.Types.ObjectId, ref: 'Teacher' },
   
   // All students meant to be in this room
-  students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student' }]
-});
+  students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student' }],
+  
+  // Geolocation for anti-cheating
+  location: {
+    latitude: { type: Number },
+    longitude: { type: Number },
+    address: { type: String }
+  }
+}, { timestamps: true });
+
+// Indexes for performance
+ClassSchema.index({ courseCode: 1 });
+ClassSchema.index({ teacherId: 1 });
+ClassSchema.index({ branch: 1, semester: 1 });
 
 module.exports = mongoose.model('Class', ClassSchema);
