@@ -25,12 +25,13 @@ const { generateRotatingQR } = require('./utils/totp');
 // Validate environment variables
 validateEnv();
 
+// Initialize Express app
 const app = express();
 
-// Connect database
+// Connect to database
 connectDB();
 
-// Security middleware
+// Apply security middleware
 app.use(securityMiddleware);
 app.use(generalLimiter);
 
@@ -40,7 +41,7 @@ app.use(express.json());
 // Create HTTP server
 const server = http.createServer(app);
 
-// Initialize socket.io
+// Initialize Socket.io for real-time features
 const io = new Server(server, {
   cors: {
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
@@ -49,138 +50,112 @@ const io = new Server(server, {
   }
 });
 
-// Attach socket to requests
+// Middleware: Attach the Socket.io instance to the request object
 app.use((req, res, next) => {
   req.io = io;
   next();
 });
 
-
-// HEALTH CHECK
+// Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({
+  res.json({ 
     status: 'OK',
     timestamp: new Date().toISOString(),
     uptime: process.uptime()
   });
 });
 
-
-// API ROUTES
+// API Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/attendance', require('./routes/attendance'));
 app.use('/api/sessions', require('./routes/session'));
 app.use('/api/classes', require('./routes/class'));
 app.use('/api/admin', require('./routes/admin'));
 
-
-// SERVE FRONTEND (production)
+// Serve frontend static files (production)
 const frontendPath = path.join(__dirname, '../frontend/dist');
-
 app.use(express.static(frontendPath));
 
+// SPA fallback for frontend routing
 app.get('(.*)', (req, res) => {
   res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
+// Error handling middleware (must be last)
+app.use(notFoundHandler);
+app.use(errorHandler);
 
-// SOCKET LOGIC
+// WebSocket Connection Logic
 io.on('connection', (socket) => {
   logger.info(`New dashboard connected: ${socket.id}`);
 
   socket.on('join_session', ({ sessionId, userRole, userId }) => {
-
     socket.join(sessionId);
     socket.sessionId = sessionId;
     socket.userRole = userRole;
     socket.userId = userId;
-
+    
     logger.info(`User ${userId} (${userRole}) joined session ${sessionId}`);
-
+    
+    // Notify others in session
     socket.to(sessionId).emit('user_joined', {
       userId,
       userRole,
       timestamp: new Date()
     });
-
   });
 
   socket.on('start_session', ({ classId, sessionId }) => {
-
     socket.join(sessionId);
-
     logger.info(`Session ${sessionId} started for Class ${classId}`);
 
+    // Push first QR code immediately
     socket.emit('qr_update', generateRotatingQR(classId, sessionId));
 
+    // Rotate and push a new QR code every 10 seconds
     const qrInterval = setInterval(() => {
-      io.to(sessionId).emit(
-        'qr_update',
-        generateRotatingQR(classId, sessionId)
-      );
+      io.to(sessionId).emit('qr_update', generateRotatingQR(classId, sessionId));
     }, 10000);
 
     socket.on('disconnect', () => {
       clearInterval(qrInterval);
-      logger.info(`Dashboard disconnected for ${sessionId}`);
+      logger.info(`Dashboard disconnected, stopped QR generation for ${sessionId}`);
     });
-
   });
 
   socket.on('leave_session', ({ sessionId }) => {
-
     socket.leave(sessionId);
-
     socket.to(sessionId).emit('user_left', {
       userId: socket.userId,
       userRole: socket.userRole,
       timestamp: new Date()
     });
-
+    logger.info(`User ${socket.userId} left session ${sessionId}`);
   });
 
   socket.on('disconnect', () => {
-
     if (socket.sessionId) {
-
       socket.to(socket.sessionId).emit('user_left', {
         userId: socket.userId,
         userRole: socket.userRole,
         timestamp: new Date()
       });
-
     }
-
     logger.info(`User disconnected: ${socket.id}`);
-
   });
-
 });
 
-
-// ERROR HANDLERS
-app.use(notFoundHandler);
-app.use(errorHandler);
-
-
-// GRACEFUL SHUTDOWN
+// Graceful shutdown
 process.on('SIGTERM', () => {
-
   logSystem.gracefulShutdown('SIGTERM');
-
   server.close(() => {
     logger.info('Process terminated');
     process.exit(0);
   });
-
 });
 
-
 const PORT = process.env.PORT || 5000;
-
 server.listen(PORT, () => {
-
   logSystem.serverStart(PORT);
   logger.info(`Server listening on port ${PORT}`);
-
 });
