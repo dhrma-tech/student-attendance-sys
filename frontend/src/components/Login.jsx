@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
+import Card from './ui/Card';
+import Button from './ui/Button';
+import Input from './ui/Input';
+import Badge from './ui/Badge';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +17,7 @@ const Login = () => {
   const { login, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { isDark } = useTheme();
 
   const from = location.state?.from?.pathname || '/';
 
@@ -60,86 +66,152 @@ const Login = () => {
     }
   };
 
+  const getRoleIcon = (role) => {
+    switch (role) {
+      case 'student':
+        return '👤';
+      case 'teacher':
+        return '👨‍🏫';
+      case 'admin':
+        return '👑';
+      default:
+        return '👤';
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+    <div className={`min-h-screen flex items-center justify-center p-4 ${
+      isDark ? 'bg-slate-900' : 'bg-slate-50'
+    }`}>
+      <div className="w-full max-w-md">
+        {/* Logo and Title */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Smart Attendance</h1>
-          <p className="text-gray-500">Sign in to your account</p>
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-2xl mb-4">
+            <span className="text-white font-bold text-2xl">SA</span>
+          </div>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+            Smart Attendance
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400">
+            Sign in to your account
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-              {error}
+        {/* Login Form */}
+        <Card padding="lg" shadow="lg">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Error Message */}
+            {error && (
+              <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <div className="flex items-center">
+                  <svg className="w-5 h-5 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-red-700 dark:text-red-300 text-sm">
+                    {error}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Role Selection */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
+                Select Your Role
+              </label>
+              <div className="grid grid-cols-3 gap-3">
+                {['student', 'teacher', 'admin'].map((role) => (
+                  <button
+                    key={role}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, role })}
+                    className={`p-3 rounded-lg border-2 transition-all duration-200 ${
+                      formData.role === role
+                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
+                        : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                    }`}
+                  >
+                    <div className="text-2xl mb-1">{getRoleIcon(role)}</div>
+                    <div className="text-sm font-medium capitalize text-slate-900 dark:text-white">
+                      {role}
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
-          )}
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Role
-            </label>
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required
-            >
-              <option value="student">Student</option>
-              <option value="teacher">Teacher</option>
-              <option value="admin">Administrator</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {getIdentifierLabel()}
-            </label>
-            <input
+            {/* Identifier Input */}
+            <Input
+              label={getIdentifierLabel()}
               type="text"
               name="identifier"
               value={formData.identifier}
               onChange={handleChange}
               placeholder={getIdentifierPlaceholder()}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
+              icon={
+                <svg className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              }
             />
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Password
-            </label>
-            <input
+            {/* Password Input */}
+            <Input
+              label="Password"
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter your password"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
+              icon={
+                <svg className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              }
             />
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full h-12"
+              variant="primary"
+            >
+              {loading ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a2 2 0 012-2h4a2 2 0 012 2v4a2 2 0 01-2h4a2 2 0 01-2z"></path>
+                  </svg>
+                  Signing in...
+                </>
+              ) : (
+                'Sign In'
+              )}
+            </Button>
+          </form>
+        </Card>
+
+        {/* Help Text */}
+        <div className="mt-6 text-center">
+          <p className="text-sm text-slate-600 dark:text-slate-400">
+            For demo: Use your PRN number as student, email as teacher/admin
+          </p>
+        </div>
+
+        {/* Additional Links */}
+        <div className="mt-8 text-center">
+          <div className="flex items-center justify-center space-x-4 text-sm">
+            <a href="#" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+              Forgot Password?
+            </a>
+            <span className="text-slate-300 dark:text-slate-600">•</span>
+            <a href="#" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+              Need Help?
+            </a>
           </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center"
-          >
-            {loading ? (
-              <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Signing in...
-              </>
-            ) : (
-              'Sign In'
-            )}
-          </button>
-        </form>
-
-        <div className="mt-6 text-center text-sm text-gray-500">
-          <p>For demo: Use your PRN number as student, email as teacher/admin</p>
         </div>
       </div>
     </div>
