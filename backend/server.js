@@ -4,6 +4,17 @@ const path = require('path');
 const { Server } = require('socket.io');
 require('dotenv').config();
 
+// Global error handling
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  process.exit(1);
+});
+
 const connectDB = require('./config/database');
 const { validateEnv } = require('./config/envValidation');
 const { securityMiddleware, generalLimiter } = require('./middleware/security');

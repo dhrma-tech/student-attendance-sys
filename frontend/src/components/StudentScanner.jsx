@@ -15,7 +15,7 @@ const StudentScanner = ({ studentId }) => {
   // Initialize the device fingerprint when the component loads
   useEffect(() => {
     const getFingerprint = async () => {
-      const fp = await fpPromise.load();
+      const fp = await FingerprintJS.load();
       const result = await fp.get();
       setDeviceId(result.visitorId); // This is the unique hash for the student's phone
     };
@@ -84,8 +84,8 @@ const StudentScanner = ({ studentId }) => {
           ) : (
             <div className="w-full relative">
               <div className="overflow-hidden rounded-xl border-4 border-gray-200">
-                <Scanner 
-                  onResult={(text) => handleScan(text)} 
+                <QRScanner 
+                  onScan={(result) => handleScan(result[0]?.rawValue)}
                   onError={(error) => console.log(error?.message)}
                   options={{ delayBetweenScanAttempts: 1000 }}
                 />

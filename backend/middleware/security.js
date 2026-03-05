@@ -6,6 +6,7 @@ const hpp = require('hpp');
 const compression = require('compression');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const express = require('express');
 
 const createRateLimiter = (windowMs, max, message) => {
   return rateLimit({
