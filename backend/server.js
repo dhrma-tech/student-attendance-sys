@@ -59,7 +59,7 @@ app.use('/api/classes', require('./routes/class'));
 app.use('/api/admin', require('./routes/admin'));
 
 // SPA fallback for frontend routing
-app.get('*', (req, res) => {
+app.get('(.*)', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
