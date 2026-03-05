@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Scanner } from '@yudiel/react-qr-scanner';
-import fpPromise from '@fingerprintjs/fingerprintjs';
+import { useNavigate } from 'react-router-dom';
+import QRScanner from '@yudiel/react-qr-scanner';
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import axios from 'axios';
+
+// Get API URL from environment variables
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const StudentScanner = ({ studentId }) => {
   const [deviceId, setDeviceId] = useState(null);
@@ -27,8 +31,8 @@ const StudentScanner = ({ studentId }) => {
       // The QR code holds a JSON string from our Python/Node generator
       const qrPayload = JSON.parse(scannedText); 
 
-      // Send the data to our secure Express endpoint
-      const response = await axios.post('http://localhost:5000/api/attendance/scan', {
+      // Send data to our secure Express endpoint
+      const response = await axios.post(`${API_URL}/api/attendance/scan`, {
         studentId: studentId, // In a real app, this comes from your Auth/Login context
         sessionId: qrPayload.sessionId,
         classId: qrPayload.classId,

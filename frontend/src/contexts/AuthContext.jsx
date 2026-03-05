@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import axios from 'axios';
 
-const AuthContext = createContext();
+// Get API URL from environment variables
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
 // Action types
 const AUTH_START = 'AUTH_START';
@@ -68,7 +70,7 @@ const authReducer = (state, action) => {
 // Create axios instance with interceptors
 const createAxiosInstance = (dispatch) => {
   const instance = axios.create({
-    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
+    baseURL: `${API_URL}/api`,
     withCredentials: true
   });
 
@@ -95,7 +97,7 @@ const createAxiosInstance = (dispatch) => {
 
         try {
           const response = await axios.post(
-            `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/refresh`,
+            `${API_URL}/api/auth/refresh`,
             {},
             { withCredentials: true }
           );
@@ -164,7 +166,7 @@ export const AuthProvider = ({ children }) => {
     
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/auth/login`,
+        `${API_URL}/api/auth/login`,
         { role, identifier, password },
         { withCredentials: true }
       );
