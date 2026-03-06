@@ -15,6 +15,24 @@ import StudentDashboard from './components/dashboard/StudentDashboard';
 import TeacherQR from './components/TeacherQR';
 import StudentScanner from './components/StudentScanner';
 
+// Create a wrapper component for role-based dashboard
+const RoleBasedDashboard = () => {
+  const { user } = useAuth();
+  
+  if (!user) return null;
+  
+  switch (user.role) {
+    case 'student':
+      return <StudentDashboard />;
+    case 'teacher':
+      return <TeacherDashboard />;
+    case 'admin':
+      return <AdminDashboard />;
+    default:
+      return <div>Invalid role</div>;
+  }
+};
+
 function App() {
   return (
     <ThemeProvider>
@@ -34,16 +52,7 @@ function App() {
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={
                 <ProtectedRoute>
-                  {/* Role-based dashboard */}
-                  <ProtectedRoute requiredRole="student">
-                    <StudentDashboard />
-                  </ProtectedRoute>
-                  <ProtectedRoute requiredRole="teacher">
-                    <TeacherDashboard />
-                  </ProtectedRoute>
-                  <ProtectedRoute requiredRole="admin">
-                    <AdminDashboard />
-                  </ProtectedRoute>
+                  <RoleBasedDashboard />
                 </ProtectedRoute>
               } />
               
