@@ -15,8 +15,8 @@ import StudentDashboard from './components/dashboard/StudentDashboard';
 import TeacherQR from './components/TeacherQR';
 import StudentScanner from './components/StudentScanner';
 
-// Create a wrapper component for role-based dashboard
-const RoleBasedDashboard = () => {
+// Dashboard content component with role-based rendering
+const DashboardContent = () => {
   const { user } = useAuth();
   
   if (!user) return null;
@@ -52,7 +52,7 @@ function App() {
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={
                 <ProtectedRoute>
-                  <RoleBasedDashboard />
+                  <DashboardContent />
                 </ProtectedRoute>
               } />
               
