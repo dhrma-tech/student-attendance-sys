@@ -27,48 +27,47 @@ function App() {
             {/* Protected Routes */}
             <Route path="/" element={
               <ProtectedRoute>
-                <DashboardLayout>
-                  <Routes>
-                    <Route index element={<Navigate to="/dashboard" replace />} />
-                    <Route path="dashboard" element={
-                      <ProtectedRoute>
-                        {/* Role-based dashboard */}
-                        <ProtectedRoute requiredRole="student">
-                          <StudentDashboard />
-                        </ProtectedRoute>
-                        <ProtectedRoute requiredRole="teacher">
-                          <TeacherDashboard />
-                        </ProtectedRoute>
-                        <ProtectedRoute requiredRole="admin">
-                          <AdminDashboard />
-                        </ProtectedRoute>
-                      </ProtectedRoute>
-                    } />
-                    
-                    {/* Student Routes */}
-                    <Route path="attendance" element={
-                      <ProtectedRoute requiredRole="student">
-                        <StudentScanner studentId="demo-student" />
-                      </ProtectedRoute>
-                    } />
-                    
-                    {/* Teacher Routes */}
-                    <Route path="qr-display" element={
-                      <ProtectedRoute requiredRole="teacher">
-                        <TeacherQR classId="demo-class" sessionId="demo-session" />
-                      </ProtectedRoute>
-                    } />
-                    
-                    {/* Admin Routes */}
-                    <Route path="admin/*" element={
-                      <ProtectedRoute requiredRole="admin">
-                        <AdminDashboard />
-                      </ProtectedRoute>
-                    } />
-                  </Routes>
-                </DashboardLayout>
+                <DashboardLayout />
               </ProtectedRoute>
-            } />
+            }>
+              {/* Nested routes for dashboard */}
+              <Route index element={<Navigate to="/dashboard" replace />} />
+              <Route path="dashboard" element={
+                <ProtectedRoute>
+                  {/* Role-based dashboard */}
+                  <ProtectedRoute requiredRole="student">
+                    <StudentDashboard />
+                  </ProtectedRoute>
+                  <ProtectedRoute requiredRole="teacher">
+                    <TeacherDashboard />
+                  </ProtectedRoute>
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                </ProtectedRoute>
+              } />
+              
+              {/* Student Routes */}
+              <Route path="attendance" element={
+                <ProtectedRoute requiredRole="student">
+                  <StudentScanner studentId="demo-student" />
+                </ProtectedRoute>
+              } />
+              
+              {/* Teacher Routes */}
+              <Route path="qr-display" element={
+                <ProtectedRoute requiredRole="teacher">
+                  <TeacherQR classId="demo-class" sessionId="demo-session" />
+                </ProtectedRoute>
+              } />
+              
+              {/* Admin Routes */}
+              <Route path="admin/*" element={
+                <ProtectedRoute requiredRole="admin">
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } />
+            </Route>
           </Routes>
         </Router>
       </AuthProvider>
