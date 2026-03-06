@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App.js'; // The routing file we made earlier
+import App from './App.jsx'; // The routing file we made earlier
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
