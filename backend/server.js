@@ -17,7 +17,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
 const connectDB = require('./config/database');
 const { validateEnv } = require('./config/envValidation');
-const { securityMiddleware, generalLimiter } = require('./middleware/security');
+const { securityMiddleware, generalLimiter } = require('./middleware/security-minimal');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const { logSystem, logger } = require('./utils/logger');
 const { generateRotatingQR } = require('./utils/totp');
