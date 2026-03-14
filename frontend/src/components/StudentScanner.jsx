@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import QRScanner from '@yudiel/react-qr-scanner';
+import { Scanner } from '@yudiel/react-qr-scanner';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import axios from 'axios';
 
@@ -84,7 +84,7 @@ const StudentScanner = ({ studentId }) => {
           ) : (
             <div className="w-full relative">
               <div className="overflow-hidden rounded-xl border-4 border-gray-200">
-                <QRScanner 
+                <Scanner 
                   onScan={(result) => handleScan(result[0]?.rawValue)}
                   onError={(error) => console.log(error?.message)}
                   options={{ delayBetweenScanAttempts: 1000 }}
