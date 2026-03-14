@@ -5,7 +5,7 @@ import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import axios from 'axios';
 
 // Get API URL from environment variables
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = process.env.VITE_API_URL || 'http://localhost:5000';
 
 const StudentScanner = ({ studentId }) => {
   const [deviceId, setDeviceId] = useState(null);

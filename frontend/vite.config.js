@@ -11,10 +11,10 @@ export default defineConfig({
     sourcemap: true,
   },
   define: {
-    // Make sure import.meta.env is available
-    'import.meta.env': JSON.stringify({
+    // Define environment variables for the build
+    'process.env': {
       VITE_API_URL: process.env.VITE_API_URL || 'http://localhost:5000',
       VITE_SOCKET_URL: process.env.VITE_SOCKET_URL || 'http://localhost:5000'
-    })
+    }
   }
 });
