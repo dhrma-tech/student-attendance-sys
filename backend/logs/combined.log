@@ -1,0 +1,4 @@
+{"level":"info","message":"Server started","metadata":{"event":"server_start","label":"app","nodeEnv":"development","pid":20356,"port":"5000","service":"attendance-system"},"timestamp":"2026-03-14T08:21:34.882Z"}
+{"level":"info","message":"Server listening on port 5000","metadata":{"label":"app","pid":20356,"service":"attendance-system"},"timestamp":"2026-03-14T08:21:34.887Z"}
+{"level":"info","message":"Server started","metadata":{"event":"server_start","label":"app","nodeEnv":"development","pid":14332,"port":"5000","service":"attendance-system"},"timestamp":"2026-03-14T08:26:02.152Z"}
+{"level":"info","message":"Server listening on port 5000","metadata":{"label":"app","pid":14332,"service":"attendance-system"},"timestamp":"2026-03-14T08:26:02.154Z"}

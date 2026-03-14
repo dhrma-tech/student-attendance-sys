@@ -80,12 +80,19 @@ const Login = () => {
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center p-4 md:p-8 ${
+    <div className={`min-h-screen w-full flex items-center justify-center p-4 md:p-8 overflow-x-hidden ${
       isDark 
-        ? 'bg-[#09090B] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#09090B] to-[#09090B]' 
-        : 'bg-slate-50 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100 via-slate-50 to-slate-50'
-    }`}>
-      <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        ? 'bg-[#09090B]' 
+        : 'bg-slate-50'
+    } relative`}>
+      {/* Decorative background blobs */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-violet-500/10 blur-[120px] rounded-full" />
+      </div>
+
+      <div className="w-full max-w-6xl z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* Left Side - Branding & Illustration (Hidden on mobile) */}
         <div className="hidden md:flex flex-col justify-center animate-slideIn">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-3xl mb-8 shadow-xl shadow-indigo-500/30 transform transition-transform hover:scale-105">
@@ -243,7 +250,7 @@ const Login = () => {
             </a>
           </div>
         </div>
-      </div>
+        </div>
       </div>
     </div>
   );
