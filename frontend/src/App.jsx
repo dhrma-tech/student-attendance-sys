@@ -13,6 +13,7 @@ import StudentDashboard from './components/dashboard/StudentDashboard';
 
 // Import existing components
 import TeacherQR from './components/TeacherQR';
+import EnvTest from './components/EnvTest';
 import StudentScanner from './components/StudentScanner';
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
+            <Route path="/test" element={<EnvTest />} />
 
             {/* Protected Routes */}
             <Route path="/" element={
