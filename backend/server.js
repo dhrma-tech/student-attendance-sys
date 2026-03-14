@@ -37,24 +37,33 @@ console.log('   FRONTEND_URL:', process.env.FRONTEND_URL);
 const app = express();
 
 // Connect to database with error handling
+console.log('🔍 Starting database connection...');
 try {
   connectDB();
+  console.log('✅ Database connection initiated successfully');
 } catch (error) {
   console.error('❌ Database connection failed:', error.message);
   process.exit(1);
 }
 
+console.log('🔍 Database connection process completed');
+
 // Apply security middleware
+console.log('🔍 Applying security middleware...');
 app.use(securityMiddleware);
 app.use(generalLimiter);
 
 // JSON parser
 app.use(express.json());
+console.log('✅ Middleware applied successfully');
 
 // Create HTTP server
+console.log('🔍 Creating HTTP server...');
 const server = http.createServer(app);
+console.log('✅ HTTP server created successfully');
 
 // Initialize Socket.io for real-time features
+console.log('🔍 Initializing Socket.io...');
 const io = new Server(server, {
   cors: {
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
@@ -62,12 +71,20 @@ const io = new Server(server, {
     credentials: true
   }
 });
+console.log('✅ Socket.io initialized successfully');
 
 // Middleware: Attach the Socket.io instance to the request object
 app.use((req, res, next) => {
   req.io = io;
   next();
 });
+
+// WebSocket Connection Logic
+console.log('🔍 Setting up WebSocket handlers...');
+io.on('connection', (socket) => {
+  logger.info(`New dashboard connected: ${socket.id}`);
+});
+console.log('✅ WebSocket handlers set up successfully');
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -168,7 +185,11 @@ process.on('SIGTERM', () => {
 });
 
 const PORT = process.env.PORT || 5000;
+console.log('🔍 Starting server on port:', PORT);
 server.listen(PORT, () => {
+  console.log('✅ Server started successfully!');
+  console.log('   Port:', PORT);
+  console.log('   Environment:', process.env.NODE_ENV);
   logSystem.serverStart(PORT);
   logger.info(`Server listening on port ${PORT}`);
 });
