@@ -1,96 +1,48 @@
 import React from 'react';
-import { useTheme } from '../../contexts/ThemeContext';
 
 const Input = ({ 
-  label,
-  type = 'text',
-  placeholder,
-  value,
-  onChange,
-  error,
-  disabled = false,
-  required = false,
-  className = '',
-  icon,
-  size = 'md'
+  label, 
+  error, 
+  icon, 
+  className = '', 
+  ...props 
 }) => {
-  const { currentTheme } = useTheme();
-  const isDark = currentTheme === 'dark';
-
-  const sizeClasses = {
-    sm: 'py-2 px-3 text-sm',
-    md: 'py-3 px-4 text-base',
-    lg: 'py-4 px-6 text-lg',
-    xl: 'py-5 px-8 text-xl'
-  };
-
-  const inputClasses = `
-    block 
-    w-full 
-    rounded-xl 
-    border-2 
-    border-slate-200/60 
-    dark:border-slate-700/60 
-    bg-slate-50/50 
-    dark:bg-slate-900/50 
-    text-slate-900 
-    dark:text-slate-100 
-    placeholder-slate-400 
-    dark:placeholder-slate-500 
-    focus:outline-none 
-    focus:border-indigo-500/80 
-    focus:ring-4 
-    focus:ring-indigo-500/10 
-    focus:bg-white
-    dark:focus:bg-slate-800
-    backdrop-blur-sm
-    transition-all 
-    duration-300
-    disabled:bg-slate-100/50 
-    disabled:dark:bg-slate-800/50
-    disabled:text-slate-500
-    disabled:cursor-not-allowed
-    ${sizeClasses[size] || sizeClasses.md}
-    ${className}
-  `;
-
-  const errorClasses = error ? 'border-red-500 focus:ring-red-500' : '';
-
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5 w-full">
       {label && (
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
-      
-      <div className="relative">
+      <div className="relative group">
         {icon && (
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors">
             {icon}
           </div>
         )}
-        
         <input
-          type={type}
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          disabled={disabled}
-          required={required}
-          className={`${inputClasses} ${errorClasses} ${icon ? 'pl-10' : ''}`}
-          style={{
-            paddingLeft: icon ? '2.5rem' : undefined
-          }}
+          className={`
+            block w-full 
+            ${icon ? 'pl-11' : 'px-4'} 
+            py-2.5 
+            bg-white dark:bg-slate-900 
+            border border-slate-200 dark:border-slate-800 
+            text-slate-900 dark:text-slate-100 
+            placeholder-slate-400
+            rounded-lg
+            focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 
+            transition-all duration-200
+            ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500/10' : ''}
+            ${className}
+          `}
+          {...props}
         />
-        
-        {error && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-            {error}
-          </p>
-        )}
       </div>
+      {error && (
+        <p className="text-xs font-medium text-red-500 ml-1 animate-fadeIn">
+          {error}
+        </p>
+      )}
     </div>
   );
 };

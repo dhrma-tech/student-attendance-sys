@@ -3,57 +3,39 @@ import { useTheme } from '../../contexts/ThemeContext';
 
 const Card = ({ 
   children, 
-  className = '',
-  padding = 'md',
-  shadow = 'md',
-  hover = false,
-  border = true
+  title, 
+  subtitle, 
+  padding = 'md', 
+  className = '', 
+  footer,
+  ...props 
 }) => {
-  const { currentTheme } = useTheme();
-  const isDark = currentTheme === 'dark';
-
-  const paddingClasses = {
-    none: '',
-    sm: 'p-3',
+  const paddingStyles = {
+    none: 'p-0',
+    sm: 'p-4',
     md: 'p-6',
     lg: 'p-8',
-    xl: 'p-12'
   };
-
-  const shadowClasses = {
-    none: '',
-    sm: 'shadow-sm',
-    md: 'shadow-md',
-    lg: 'shadow-lg',
-    xl: 'shadow-xl'
-  };
-
-  const baseClasses = `
-    relative
-    overflow-hidden
-    bg-white/80 dark:bg-slate-900/60 
-    backdrop-blur-xl
-    rounded-2xl 
-    transition-all 
-    duration-300
-    ${paddingClasses[padding] || paddingClasses.md}
-    ${shadowClasses[shadow] || shadowClasses.md}
-    ${border ? 'border border-slate-200/50 dark:border-slate-700/50' : ''}
-    ${hover ? 'hover:shadow-[0_20px_40px_-15px_rgba(79,70,229,0.15)] hover:border-indigo-500/30 hover:-translate-y-1' : ''}
-  `;
-
-  const combinedClasses = `${baseClasses} ${className}`.trim();
 
   return (
     <div 
-      className={combinedClasses}
-      style={{
-        boxShadow: isDark && shadow !== 'none' 
-          ? '0 4px 6px -1px rgba(0, 0, 0, 0.15)'
-          : undefined
-      }}
+      className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden ${className}`}
+      {...props}
     >
-      {children}
+      {(title || subtitle) && (
+        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+          {title && <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-1">{title}</h3>}
+          {subtitle && <p className="text-sm text-slate-500 dark:text-slate-400">{subtitle}</p>}
+        </div>
+      )}
+      <div className={paddingStyles[padding]}>
+        {children}
+      </div>
+      {footer && (
+        <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+          {footer}
+        </div>
+      )}
     </div>
   );
 };

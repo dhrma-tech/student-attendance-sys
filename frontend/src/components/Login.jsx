@@ -66,72 +66,39 @@ const Login = () => {
     }
   };
 
-  const getRoleIcon = (role) => {
-    switch (role) {
-      case 'student':
-        return '👤';
-      case 'teacher':
-        return '👨‍🏫';
-      case 'admin':
-        return '👑';
-      default:
-        return '👤';
-    }
-  };
+
 
   return (
-    <div className={`min-h-screen w-full flex items-center justify-center p-4 md:p-8 overflow-x-hidden ${
+    <div className={`min-h-screen w-full flex items-center justify-center p-4 md:p-8 ${
       isDark 
-        ? 'bg-[#09090B]' 
+        ? 'bg-slate-950' 
         : 'bg-slate-50'
     } relative`}>
-      {/* Decorative background blobs */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-violet-500/10 blur-[120px] rounded-full" />
-      </div>
-
-      <div className="w-full max-w-6xl z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        {/* Left Side - Branding & Illustration (Hidden on mobile) */}
-        <div className="hidden md:flex flex-col justify-center animate-slideIn">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-3xl mb-8 shadow-xl shadow-indigo-500/30 transform transition-transform hover:scale-105">
-            <span className="text-white font-bold text-3xl">SA</span>
+      <div className="w-full max-w-5xl z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        {/* Left Side - Branding */}
+        <div className="hidden md:flex flex-col justify-center animate-fadeIn">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-800 rounded-2xl mb-8 shadow-sm">
+            <span className="text-white font-bold text-2xl uppercase">SA</span>
           </div>
-          <h1 className="text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-500 dark:from-indigo-400 dark:to-violet-400 mb-6 leading-tight">
-            Next Generation<br />Attendance.
+          <h1 className="text-5xl font-bold text-slate-900 dark:text-white mb-6 leading-tight tracking-tight">
+            Attendance<br />Simplified.
           </h1>
-          <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-md">
-            Streamline your educational journey with smart QR tracking, beautiful dashboards, and real-time insights for students and faculty.
+          <p className="text-lg text-slate-500 dark:text-slate-400 max-w-md">
+            A professional QR-based attendance tracking system for modern educational environments.
           </p>
-          
-          <div className="mt-12 flex items-center space-x-6">
-            <div className="flex -space-x-3">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="w-10 h-10 rounded-full border-2 border-white dark:border-slate-900 bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-xs font-semibold text-indigo-700 dark:text-indigo-300">
-                  {String.fromCharCode(65 + i)}
-                </div>
-              ))}
-            </div>
-            <div className="text-sm font-medium text-slate-500">
-              Trusted by <span className="text-indigo-600 dark:text-indigo-400 font-bold">10,000+</span> users
-            </div>
-          </div>
         </div>
 
         {/* Right Side - Login Form */}
-        <div className="animate-fadeIn shadow-2xl shadow-indigo-500/10 rounded-3xl">
-        {/* Mobile Logo and Title */}
-        <div className="text-center mb-8 md:hidden">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl mb-4 shadow-lg shadow-indigo-500/30">
-            <span className="text-white font-bold text-2xl">SA</span>
+        <div className="w-full max-w-md mx-auto">
+        {/* Mobile Header */}
+        <div className="text-center mb-10 md:hidden">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-indigo-800 rounded-xl mb-4">
+            <span className="text-white font-bold text-xl uppercase">SA</span>
           </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
             Smart Attendance
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 font-medium">
-            Sign in to your account
-          </p>
         </div>
 
         {/* Login Form */}
@@ -156,26 +123,20 @@ const Login = () => {
               <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 tracking-wide">
                 SELECT YOUR ROLE
               </label>
-              <div className="grid grid-cols-3 gap-3">
-                {['student', 'teacher', 'admin'].map((role) => (
+              <div className="grid grid-cols-2 gap-4">
+                {['student', 'teacher'].map((role) => (
                   <button
                     key={role}
                     type="button"
                     onClick={() => setFormData({ ...formData, role })}
-                    className={`p-3 rounded-xl border-2 transition-all duration-300 relative overflow-hidden ${
+                    className={`p-4 rounded-xl border transition-all duration-200 ${
                       formData.role === role
-                        ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-500/10 shadow-inner'
-                        : 'border-slate-200/60 dark:border-slate-700/60 hover:border-indigo-300 dark:hover:border-indigo-700 hover:bg-slate-50/50 dark:hover:bg-slate-800/50'
+                        ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 shadow-sm'
+                        : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900'
                     }`}
                   >
-                    {formData.role === role && (
-                      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-violet-500/5" />
-                    )}
-                    <div className={`text-2xl mb-1 transition-transform duration-300 ${formData.role === role ? 'scale-110' : ''}`}>
-                      {getRoleIcon(role)}
-                    </div>
-                    <div className={`text-xs sm:text-sm font-bold capitalize ${
-                      formData.role === role ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400'
+                    <div className={`text-sm font-bold capitalize ${
+                      formData.role === role ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400'
                     }`}>
                       {role}
                     </div>
