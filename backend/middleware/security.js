@@ -1,6 +1,5 @@
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
-const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
 const compression = require('compression');
@@ -58,7 +57,6 @@ const securityMiddleware = [
   cookieParser(),
   express.json({ limit: '10kb' }),
   mongoSanitize(),
-  xss(),
   hpp({
     whitelist: ['sort', 'fields', 'page', 'limit']
   })
