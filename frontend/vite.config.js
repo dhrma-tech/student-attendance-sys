@@ -10,11 +10,5 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
   },
-  define: {
-    // Define environment variables for the build
-    'process.env': {
-      VITE_API_URL: process.env.VITE_API_URL || 'http://localhost:5000',
-      VITE_SOCKET_URL: process.env.VITE_SOCKET_URL || 'http://localhost:5000'
-    }
-  }
+  // Remove define section to let Vite handle env variables naturally
 });

@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import QRCode from 'react-qr-code';
 
 // Get socket URL from environment variables
-const SOCKET_URL = process.env.VITE_SOCKET_URL || 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
 // Connect to our new Express server
 const socket = io(SOCKET_URL);
