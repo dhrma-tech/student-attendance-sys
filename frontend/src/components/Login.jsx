@@ -80,19 +80,49 @@ const Login = () => {
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center p-4 ${
-      isDark ? 'bg-slate-900' : 'bg-slate-50'
+    <div className={`min-h-screen flex items-center justify-center p-4 md:p-8 ${
+      isDark 
+        ? 'bg-[#09090B] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#09090B] to-[#09090B]' 
+        : 'bg-slate-50 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100 via-slate-50 to-slate-50'
     }`}>
-      <div className="w-full max-w-md">
-        {/* Logo and Title */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-2xl mb-4">
+      <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        {/* Left Side - Branding & Illustration (Hidden on mobile) */}
+        <div className="hidden md:flex flex-col justify-center animate-slideIn">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-3xl mb-8 shadow-xl shadow-indigo-500/30 transform transition-transform hover:scale-105">
+            <span className="text-white font-bold text-3xl">SA</span>
+          </div>
+          <h1 className="text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-500 dark:from-indigo-400 dark:to-violet-400 mb-6 leading-tight">
+            Next Generation<br />Attendance.
+          </h1>
+          <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-md">
+            Streamline your educational journey with smart QR tracking, beautiful dashboards, and real-time insights for students and faculty.
+          </p>
+          
+          <div className="mt-12 flex items-center space-x-6">
+            <div className="flex -space-x-3">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="w-10 h-10 rounded-full border-2 border-white dark:border-slate-900 bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-xs font-semibold text-indigo-700 dark:text-indigo-300">
+                  {String.fromCharCode(65 + i)}
+                </div>
+              ))}
+            </div>
+            <div className="text-sm font-medium text-slate-500">
+              Trusted by <span className="text-indigo-600 dark:text-indigo-400 font-bold">10,000+</span> users
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side - Login Form */}
+        <div className="animate-fadeIn shadow-2xl shadow-indigo-500/10 rounded-3xl">
+        {/* Mobile Logo and Title */}
+        <div className="text-center mb-8 md:hidden">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl mb-4 shadow-lg shadow-indigo-500/30">
             <span className="text-white font-bold text-2xl">SA</span>
           </div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">
             Smart Attendance
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className="text-slate-600 dark:text-slate-400 font-medium">
             Sign in to your account
           </p>
         </div>
@@ -116,8 +146,8 @@ const Login = () => {
 
             {/* Role Selection */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
-                Select Your Role
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 tracking-wide">
+                SELECT YOUR ROLE
               </label>
               <div className="grid grid-cols-3 gap-3">
                 {['student', 'teacher', 'admin'].map((role) => (
@@ -125,14 +155,21 @@ const Login = () => {
                     key={role}
                     type="button"
                     onClick={() => setFormData({ ...formData, role })}
-                    className={`p-3 rounded-lg border-2 transition-all duration-200 ${
+                    className={`p-3 rounded-xl border-2 transition-all duration-300 relative overflow-hidden ${
                       formData.role === role
-                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
-                        : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                        ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-500/10 shadow-inner'
+                        : 'border-slate-200/60 dark:border-slate-700/60 hover:border-indigo-300 dark:hover:border-indigo-700 hover:bg-slate-50/50 dark:hover:bg-slate-800/50'
                     }`}
                   >
-                    <div className="text-2xl mb-1">{getRoleIcon(role)}</div>
-                    <div className="text-sm font-medium capitalize text-slate-900 dark:text-white">
+                    {formData.role === role && (
+                      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-violet-500/5" />
+                    )}
+                    <div className={`text-2xl mb-1 transition-transform duration-300 ${formData.role === role ? 'scale-110' : ''}`}>
+                      {getRoleIcon(role)}
+                    </div>
+                    <div className={`text-xs sm:text-sm font-bold capitalize ${
+                      formData.role === role ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400'
+                    }`}>
                       {role}
                     </div>
                   </button>
@@ -194,25 +231,19 @@ const Login = () => {
           </form>
         </Card>
 
-        {/* Help Text */}
-        <div className="mt-6 text-center">
-          <p className="text-sm text-slate-600 dark:text-slate-400">
-            For demo: Use your PRN number as student, email as teacher/admin
-          </p>
-        </div>
-
         {/* Additional Links */}
-        <div className="mt-8 text-center">
-          <div className="flex items-center justify-center space-x-4 text-sm">
-            <a href="#" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+        <div className="mt-8 text-center animate-pulse">
+          <div className="flex items-center justify-center space-x-6 text-sm">
+            <a href="#" className="font-medium text-slate-500 hover:text-indigo-600 dark:text-slate-500 dark:hover:text-indigo-400 transition-colors">
               Forgot Password?
             </a>
-            <span className="text-slate-300 dark:text-slate-600">•</span>
-            <a href="#" className="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+            <div className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+            <a href="#" className="font-medium text-slate-500 hover:text-indigo-600 dark:text-slate-500 dark:hover:text-indigo-400 transition-colors">
               Need Help?
             </a>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

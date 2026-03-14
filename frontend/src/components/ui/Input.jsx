@@ -27,24 +27,27 @@ const Input = ({
   const inputClasses = `
     block 
     w-full 
-    rounded-lg 
-    border 
-    border-slate-300 
-    dark:border-slate-600 
-    bg-white 
-    dark:bg-slate-800 
+    rounded-xl 
+    border-2 
+    border-slate-200/60 
+    dark:border-slate-700/60 
+    bg-slate-50/50 
+    dark:bg-slate-900/50 
     text-slate-900 
     dark:text-slate-100 
     placeholder-slate-400 
     dark:placeholder-slate-500 
     focus:outline-none 
-    focus:ring-2 
-    focus:ring-indigo-500 
-    focus:ring-offset-2
+    focus:border-indigo-500/80 
+    focus:ring-4 
+    focus:ring-indigo-500/10 
+    focus:bg-white
+    dark:focus:bg-slate-800
+    backdrop-blur-sm
     transition-all 
-    duration-200
-    disabled:bg-slate-100 
-    disabled:dark:bg-slate-700
+    duration-300
+    disabled:bg-slate-100/50 
+    disabled:dark:bg-slate-800/50
     disabled:text-slate-500
     disabled:cursor-not-allowed
     ${sizeClasses[size] || sizeClasses.md}

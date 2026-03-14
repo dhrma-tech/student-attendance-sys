@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
 /* ===== CSS RESET ===== */
 * {
   margin: 0;
@@ -11,16 +13,18 @@
   --color-primary: #4F46E5;
   --color-primaryHover: #4338CA;
   --color-secondary: #64748B;
-  --color-background: #FFFFFF;
-  --color-surface: #F8FAFC;
-  --color-border: #E5E7EB;
-  --color-text: #1F2937;
-  --color-textSecondary: #6B7280;
-  --color-textMuted: #9CA3AF;
+  --color-background: #F0F4F8; /* Light gray-blue elegant background */
+  --color-surface: #FFFFFF;
+  --color-border: #E2E8F0;
+  --color-text: #0F172A;
+  --color-textSecondary: #475569;
+  --color-textMuted: #94A3B8;
   --color-success: #10B981;
   --color-warning: #F59E0B;
-  --color-error: #EF4444;
+  --color-error: #F43F5E;
   --color-info: #3B82F6;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -49,19 +53,21 @@
 
 /* Dark Theme Variables */
 .dark {
-  --color-primary: #6366F1;
-  --color-primaryHover: #7C3AED;
-  --color-secondary: #9CA3AF;
-  --color-background: #111827;
-  --color-surface: #1F2937;
-  --color-border: #374151;
-  --color-text: #F9FAFB;
-  --color-textSecondary: #D1D5DB;
-  --color-textMuted: #9CA3AF;
+  --color-primary: #818CF8;
+  --color-primaryHover: #6366F1;
+  --color-secondary: #94A3B8;
+  --color-background: #09090B; /* Deep sophisticated dark */
+  --color-surface: #18181B;
+  --color-border: #27272A;
+  --color-text: #FAFAFA;
+  --color-textSecondary: #A1A1AA;
+  --color-textMuted: #71717A;
   --color-success: #10B981;
   --color-warning: #F59E0B;
-  --color-error: #EF4444;
+  --color-error: #F43F5E;
   --color-info: #3B82F6;
+  --glass-bg: rgba(24, 24, 27, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.08);
 
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.15);
@@ -89,9 +95,11 @@ html, body {
 
 /* ===== TYPOGRAPHY ===== */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  line-height: 1.25;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
   margin-bottom: var(--spacing-sm);
+  letter-spacing: -0.025em;
 }
 
 h1 { font-size: 2.25rem; }
