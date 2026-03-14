@@ -76,7 +76,7 @@ app.use('/api/admin', require('./routes/admin'));
 const frontendPath = path.join(__dirname, '../frontend/dist');
 app.use(express.static(frontendPath));
 
-// SPA fallback for frontend routing
+// SPA fallback for frontend routing (Express 5 compatible)
 app.get('*', (req, res) => {
   res.sendFile(path.join(frontendPath, 'index.html'));
 });
