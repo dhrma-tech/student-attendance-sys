@@ -112,13 +112,22 @@ const StudentDashboard = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-          Student Dashboard
-        </h1>
-        <p className="mt-2 text-slate-600 dark:text-slate-400">
-          Track your attendance and stay on top of your classes.
-        </p>
+      <div className="mb-10 flex flex-col md:flex-row md:items-center md:justify-between animate-fadeIn">
+        <div>
+          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-500 dark:from-indigo-400 dark:to-violet-300">
+            Student Dashboard
+          </h1>
+          <p className="mt-2 text-slate-600 dark:text-slate-400 font-medium">
+            Track your attendance and stay on top of your classes.
+          </p>
+        </div>
+        
+        <div className="mt-4 md:mt-0 flex items-center space-x-4">
+           {/* Decorative Date or User tag could go here */}
+           <div className="px-5 py-2.5 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200/50 dark:border-slate-700/50 font-semibold text-slate-700 dark:text-slate-300">
+             Welcome Back, Student
+           </div>
+        </div>
       </div>
 
       {/* Attendance Alert */}
@@ -159,7 +168,7 @@ const StudentDashboard = () => {
                   {stat.subtitle}
                 </p>
               </div>
-              <div className="text-3xl opacity-20">
+              <div className={`p-3 rounded-2xl bg-${stat.color}-100 dark:bg-${stat.color}-900/20 text-3xl transition-transform hover:scale-110 duration-300`}>
                 {stat.icon}
               </div>
             </div>
