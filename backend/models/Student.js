@@ -21,9 +21,7 @@ const StudentSchema = new mongoose.Schema({
   enrolledClasses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Class' }]
 }, { timestamps: true });
 
-// Indexes for performance
-StudentSchema.index({ email: 1 });
-StudentSchema.index({ prnNumber: 1 });
+// Indexes for performance (unique fields already have indexes)
 StudentSchema.index({ role: 1 });
 StudentSchema.index({ branch: 1, year: 1 });
 
