@@ -5,10 +5,10 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server-minimal.js",
-    "dev": "nodemon server-minimal.js",
-    "start:full": "node server.js",
-    "dev:full": "nodemon server.js",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "start:minimal": "node server-minimal.js",
+    "dev:minimal": "nodemon server-minimal.js",
     "setup:production": "node scripts/setup-production.js",
     "db:indexes": "node scripts/create-indexes.js"
   },
