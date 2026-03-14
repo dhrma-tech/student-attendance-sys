@@ -1,8 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './components/Login';
 import DashboardLayout from './components/layout/DashboardLayout';
@@ -16,25 +15,25 @@ import StudentDashboard from './components/dashboard/StudentDashboard';
 import TeacherQR from './components/TeacherQR';
 import StudentScanner from './components/StudentScanner';
 
-// Dashboard content component with role-based rendering
-const DashboardContent = () => {
-  const { user } = useAuth();
-  
-  if (!user) return null;
-  
-  switch (user.role) {
-    case 'student':
-      return <StudentDashboard />;
-    case 'teacher':
-      return <TeacherDashboard />;
-    case 'admin':
-      return <AdminDashboard />;
-    default:
-      return <div>Invalid role</div>;
-  }
-};
-
 function App() {
+  // Dashboard content component with role-based rendering - moved inside App
+  const DashboardContent = () => {
+    const { user } = useAuth();
+    
+    if (!user) return null;
+    
+    switch (user.role) {
+      case 'student':
+        return <StudentDashboard />;
+      case 'teacher':
+        return <TeacherDashboard />;
+      case 'admin':
+        return <AdminDashboard />;
+      default:
+        return <div>Invalid role</div>;
+    }
+  };
+
   return (
     <ThemeProvider>
       <AuthProvider>
