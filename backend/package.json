@@ -17,9 +17,6 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@fingerprintjs/fingerprintjs": "^5.0.1",
-    "@yudiel/react-qr-scanner": "^2.5.1",
-    "axios": "^1.13.5",
     "bcryptjs": "^3.0.3",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
